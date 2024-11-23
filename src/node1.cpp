@@ -6,17 +6,11 @@
 #include <iostream>
 using namespace std; 
 
-double px;
 
-void turtlesimCallback(const turtlesim::Pose::ConstPtr& msg){
-	ROS_INFO("The position of the turtle is: %f, %f, %f\n", 	msg->x,msg-> y,msg-> theta);
-	px=msg->x;
-	
-}
 int main (int argc, char **argv){
 	ros::init(argc, argv, "node_1");
 	ros::NodeHandle n;
-	ros::Subscriber turtle_sub = n.subscribe("/turtle1/pose", 10, turtlesimCallback); //topic,buffer and the name of the callback
+	
 	ros::Publisher turtle1_pub = n.advertise <geometry_msgs::Twist>("/turtle1/cmd_vel", 10);	
 	ros::Publisher turtle2_pub = n.advertise <geometry_msgs::Twist>("/turtle2/cmd_vel",10);
 	
@@ -29,22 +23,39 @@ int main (int argc, char **argv){
 	
 	turtle_client.call(my_spawn);
 	
-	int choose = 0;
-	float new_vel=0.0;
+	float new_velx, new_vely, new_velz;
 	
 	ros::Rate loop_rate(1);
 	geometry_msgs::Twist my_vel; 
 	
 	while (ros::ok()){
-		cout<<"Choose a turtle: ";
+		int choose = 0;
+		cout<<"Choose one turtle between 1 and 2: ";
 		cin>>choose;
-		cout<<"Choose velocity: ";
-		cin>>new_vel;
-		my_vel.linear.x=new_vel;
-		if (choose == 0){
-			turtle1_pub.publish(my_vel);
+		if (choose == 1 || choose ==2){
+			cout<<"Choose linear velocity along x: ";
+			cin>>new_velx;
+			cout<<"Choose linear velocity along y: ";
+			cin>>new_vely;
+			cout<<"Choose angular velocity along z: ";
+			cin>>new_velz;
+			my_vel.linear.x=new_velx;
+			my_vel.linear.y=new_vely;
+			my_vel.angular.z=new_velz;
+			switch (choose){
+				case 1:  
+					turtle1_pub.publish(my_vel);
+					break;
+				case 2:
+					turtle2_pub.publish(my_vel);
+					break;
+				default:
+					cout<<"Error...";
+			}
 		}
-		if (choose == 1){
+		else {
+			my_vel.linear.x= my_vel.linear.y= my_vel.angular.z=0;
+			turtle1_pub.publish(my_vel);
 			turtle2_pub.publish(my_vel);
 		}
 		ros::spinOnce();
