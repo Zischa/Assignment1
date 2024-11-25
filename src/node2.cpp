@@ -59,11 +59,17 @@ int main (int argc, char**argv){
 			distance_msg.dist = distance_cal(turtle1_pose, turtle2_pose);
 			distance_msg.name = "Current distance between turtles";
 			distance_pub.publish (distance_msg);
+			
+			//this if ensures that the two turtles are not getting closer and make it possible for them to move if they're moving away.
+			//if the distance is < 2 and the previus distance is > than current distance that means that the user entered a spped that tends to make them closer
+			//Then the program stop the turtles.
+			//Instead, if they're getting apart (old distance < current distance), the program make them move even if distance < 2.
 			if (current_distance < threshold && current_distance - previous_distance < 0.0){
 				turtle1_pub.publish (my_vel);
 				turtle2_pub.publish(my_vel);
 				ROS_INFO ("Turtles are too close, move the part!");
 			}
+			//the same reasing is applied to the case of the edges.
 			if (turtle1_pose.x> 10.0 || turtle1_pose.x<1 || turtle1_pose.y>10.0 || turtle1_pose.y<1.0){
 			borderx=new_borderx;
 			bordery=new_bordery;
