@@ -96,13 +96,13 @@ int main (int argc, char**argv){
 				if (turtle2_pose.x>10.0 || turtle2_pose.y>10.0){
 					if ((new_borderx-borderx>0)||(new_bordery-bordery>0)){
 						turtle2_pub.publish(my_vel);
-					ROS_INFO ("Turtle1 is too close to the border!! Please move...");
+					ROS_INFO ("Turtle2 is too close to the border!! Please move...");
 					}
 				}
 				if (turtle2_pose.x<1.0 || turtle2_pose.y<1.0){
 					if ((new_borderx-borderx<0)||(new_bordery-bordery<0)){
 						turtle2_pub.publish(my_vel);
-					ROS_INFO ("Turtle1 is too close to the border!! Please move...");
+					ROS_INFO ("Turtle2 is too close to the border!! Please move...");
 					}
 				}
 			}
